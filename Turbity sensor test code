@@ -1,0 +1,24 @@
+//This code is for testing the turbinity sensor with Arduino, the ranges of Clear, Cloudy and Dirty, were establish by experimente
+
+int sensorPin = A0;  //connect the senstor to pin A0 of arduino UNO
+void setup()
+{ 
+  Serial.begin(9600);  //start serial communication
+}
+void loop() {
+  int sensorValue = analogRead(sensorPin);  //read the sensor
+  Serial.println(sensorValue);  //se raw numbers
+  int turbidity = map(sensorValue, 0, 750, 100, 0);  //change the range to 0-100
+  Serial.println("% de impurezas");
+  Serial.println(turbidity);
+  delay(100);
+  if (turbidity < 20) {                 //drinking water
+    Serial.println(" its CLEAR ");
+  }
+  if ((turbidity > 20) && (turbidity < 50)) {  //water with some impurities
+    Serial.println(" its CLOUDY ");
+  }
+  if (turbidity > 50) {   //dont drink this water!
+    Serial.println(" its DIRTY ");
+  }
+}
