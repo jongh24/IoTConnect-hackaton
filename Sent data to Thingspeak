@@ -1,5 +1,5 @@
 /*
-  This code uses as based code provided in the thinspeak library, examples, WriteSingleField 
+  This code uses as based code provided in the thingspeak library, examples, WriteSingleField 
   this example is own by  Copyright 2020, The MathWorks, Inc. and was used only for teaching and leaarning.
   please install first library ThingSpeak.h
   also is needed to install ESP8266WiFi.h and secrets.h, we used a esp8266 ver 1 with 4mb flash memory
