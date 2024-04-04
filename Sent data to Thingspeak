@@ -1,1 +1,62 @@
+/*
+  This code uses as based code provided in the thinspeak library, examples, WriteSingleField 
+  this example is own by  Copyright 2020, The MathWorks, Inc. and was used only for teaching and leaarning.
+  please install first library ThingSpeak.h
+  also is needed to install ESP8266WiFi.h and secrets.h, we used a esp8266 ver 1 with 4mb flash memory
+  please verify you have installed the Generic Module ESP8266 in the Arduino IDE boards
+  
+*/
 
+#include <ESP8266WiFi.h>
+#include "secrets.h"
+#include "ThingSpeak.h" // this are the libraries needed
+
+char ssid[] = "S23 de jonathan";   // changed for you own wifi, be aware of firewall blocks!
+char pass[] = "d8ft3h33bavditm";   // your wifi passcode
+int keyIndex = 0;            // your network key Index number (needed only for WEP), recommended is easy to use a cellphone has hotspot
+WiFiClient  client;
+
+unsigned long myChannelNumber = 2480973;  // the name of the channel, this one is from IoT Connect project, please change
+const char * myWriteAPIKey = "A0FJ0EWUCCK71XUY";  //also change this one from your own
+int sensorPin = A0;  // sensor connected con pin A0 from esp82
+
+void setup() {
+  Serial.begin(115200);  // Initialize serial
+  while (!Serial) {
+    ; // wait for serial port to connect.
+  }
+  
+  WiFi.mode(WIFI_STA); 
+  ThingSpeak.begin(client);  // Initialize ThingSpeak
+}
+
+void loop() {
+
+
+  // Connect or reconnect to WiFi
+  if(WiFi.status() != WL_CONNECTED){
+    Serial.print("Attempting to connect to SSID: ");
+    Serial.println(SECRET_SSID);
+    while(WiFi.status() != WL_CONNECTED){
+      WiFi.begin(ssid, pass);  // Connect to WPA/WPA2 network. Change this line if using open or WEP network
+      Serial.print(".");
+      delay(5000);     
+    } 
+    Serial.println("\nConnected.");
+  }
+
+  int sensorValue = analogRead(sensorPin);
+  int turbidity = map(sensorValue, 0, 750, 100, 0);  //this provides the lecture of the sensor fron 0-100, drinking water is 20, more than 30 is contaminated water
+  
+  // This send the data adquired by the sensor to our channel.
+  int x = ThingSpeak.writeField(myChannelNumber, 1, turbidity, myWriteAPIKey);
+  if(x == 200){
+    Serial.println("Channel update successful.");
+  }
+  else{
+    Serial.println("Problem updating channel. HTTP error code " + String(x));
+  }
+
+  
+  delay(20000); // Wait 20 seconds to update the channel again
+}
